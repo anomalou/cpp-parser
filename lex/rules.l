@@ -1,6 +1,15 @@
 %{
     enum Lexem{
-        END = 256,
+        INCLUDE = 256,
+		MAIN,
+		IF, 
+		ELSE,
+		PRINTF,
+		SCANF,
+		RETURN,
+        INIT_INT,
+        INIT_INT_E,
+        END,
         INT,
         FLOAT,
         NAME,
@@ -20,19 +29,13 @@
         LB,
         RB,
         LP,
-        RP,
-		INCLUDE,
-		MAIN,
-		IF, 
-		ELSE,
-		PRINTF,
-		SCANF,
-		RETURN
+        RP
     };
 %}
 
 DIGIT [0-9]
 CHAR [a-zA-Z]
+WHITESPACE [ \n\t\r]+ 
 
 %%
 #include<{CHAR}+> {return INCLUDE;}
@@ -42,6 +45,9 @@ else {return ELSE;}
 printf {return PRINTF;}
 scanf {return SCANF;}
 return {return RETURN;}
+
+int{WHITESPACE}{CHAR}({CHAR}|{DIGIT})* {return INIT_INT;}
+int{WHITESPACE}{CHAR}({CHAR}|{DIGIT})*{WHITESPACE}={DIGIT}+ {return INIT_INT_E;}
 
 [\0\n] {return END;}
 ; {return ENDL;}
