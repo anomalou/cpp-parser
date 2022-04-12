@@ -1,7 +1,7 @@
 %{
     enum Lexem{
         INCLUDE = 256,
-		MAIN,
+		INT_MAIN,
 		IF, 
 		ELSE,
 		PRINTF,
@@ -39,15 +39,15 @@ WHITESPACE [ \n\t\r]+
 
 %%
 #include<{CHAR}+> {return INCLUDE;}
-main {return MAIN;}
+int{WHITESPACE}main\(\) {return INT_MAIN;}
 if {return IF;}
 else {return ELSE;}
 printf {return PRINTF;}
 scanf {return SCANF;}
 return {return RETURN;}
 
-int{WHITESPACE}{CHAR}({CHAR}|{DIGIT})* {return INIT_INT;}
-int{WHITESPACE}{CHAR}({CHAR}|{DIGIT})*{WHITESPACE}={DIGIT}+ {return INIT_INT_E;}
+int{WHITESPACE}{CHAR}({CHAR}|{DIGIT})*; {return INIT_INT;}
+int{WHITESPACE}{CHAR}({CHAR}|{DIGIT})*{WHITESPACE}={WHITESPACE}{DIGIT}+; {return INIT_INT_E;}
 
 [\0\n] {return END;}
 ; {return ENDL;}
