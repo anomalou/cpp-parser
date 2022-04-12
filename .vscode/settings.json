@@ -1,0 +1,7 @@
+{
+    "files.associations": {
+        "*.script": "lua",
+        "*.pl": "prolog",
+        "iostream": "cpp"
+    }
+}
