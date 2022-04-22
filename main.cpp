@@ -16,6 +16,8 @@ enum Token{
     RETURN,
     NUM,
     DOT_COMMA,
+    TYPE, 
+    EQUALS,
 
 };
 
@@ -27,7 +29,7 @@ extern int yylex();
 extern char *yytext;
 extern int yyleng;
 
-void getNextToken();
+void getNextToken(bool skipEndl);
 
 bool program(bool bGetNextToken);
 bool includesPart(bool bGetNextToken);
@@ -80,96 +82,135 @@ int main(int argc, char *argv[]){
     return 0;
 }
 
-void getNextToken(){
+void getNextToken(bool skipEndl){
     int token;
 
     do{
         token = yylex();
-    }while(token < ENDF);
+    }while(token < ENDF || (token == ENDL && skipEndl));
 
     currentLexem = (enum Token)token;
 }
 
 bool program(bool bGetNextToken){
-    if(!includesPart(bGetNextToken) || !mainPart(false))
+    if(!includesPart(bGetNextToken) || !mainPart(bGetNextToken))
         return false;
 
     return true;
 }
 
 bool includesPart(bool bGetNextToken){
-    bool result = include(bGetNextToken);
-    
-    if(!result)
-        return false;
+    if(include(bGetNextToken)){
+        includesPart(true);
+        return true;
+    }
     else
-        return result || includesPart(bGetNextToken);
+        return false;
 }
 
 bool mainPart(bool bGetNextToken){
     if(bGetNextToken)
-        getNextToken();
-    
-    switch(currentLexem){
-        case MAIN_SIG:
-            return mainPart(true);
-        case FLBRACK:
-            return mainBody(true) && mainPart(false);
-        case FRBRACK:
-            return true;
-        case ENDL:
-            return mainPart(true);
-        default:
-            return false;
+        getNextToken(true);
+
+    if(currentLexem == MAIN_SIG){
+        getNextToken(true);
+        if(currentLexem == FLBRACK){
+            getNextToken(true);
+            if(mainBody(false)){
+                getNextToken(true);
+                if(currentLexem == FRBRACK)
+                    return true;
+            }
+        }
     }
+
+    return false;
+
+    // switch(currentLexem){
+    //     case MAIN_SIG:
+    //         return mainPart(true);
+    //     case FLBRACK:
+    //         return mainBody(true) && mainPart(false);
+    //     case FRBRACK:
+    //         return true;
+    //     case ENDL:
+    //         return mainPart(true);
+    //     default:
+    //         return false;
+    // }
 }
 
 bool include(bool bGetNextToken){
     if(bGetNextToken)
-        getNextToken();
+        getNextToken(false);
 
-    switch(currentLexem){
-        case INCLUDE_SIG:
-            return include(true);
-        case ILBRACK:
-            return include(true);
-        case ID:
-            return include(true);
-        case DOT_H:
-            return include(true);
-        case IRBRACK:
-            return include(true);
-        case ENDL:
-            return true;
-        default:
-            return false;
+    if(currentLexem == INCLUDE_SIG){
+        getNextToken(false);
+        if(currentLexem == ILBRACK){
+            getNextToken(false);
+            if(currentLexem == ID){
+                getNextToken(false);
+                if(currentLexem == DOT_H){
+                    getNextToken(false);
+                    if(currentLexem == IRBRACK){
+                        getNextToken(false);
+                        if(currentLexem == ENDL)
+                            return true;
+                    }
+                }
+            }
+        }
     }
+
+    return false;
+
+    // switch(currentLexem){
+    //     case INCLUDE_SIG:
+    //         getNextToken();
+    //     case ILBRACK:
+    //         getNextToken();
+    //     case ID:
+    //         getNextToken();
+    //     case DOT_H:
+    //         getNextToken();
+    //     case IRBRACK:
+    //         getNextToken();
+    //     case ENDL:
+    //         return true;
+    //     default:
+    //         return false;
+    // }
 }
 
 bool mainBody(bool bGetNextToken){
-    if(bGetNextToken)
-        getNextToken();
+    // switch(currentLexem){
+    //     case RETURN:
+    //         return mainBody(true);
+    //     case NUM:
+    //         return mainBody(true);
+    //     case DOT_COMMA:
+    //         return true;
+    // }
 
-    switch(currentLexem){
-        case RETURN:
-            return mainBody(true);
-        case NUM:
-            return mainBody(true);
-        case DOT_COMMA:
-            return true;
+    if(text(true)){
+        getNextToken(true);
+        if(currentLexem == RETURN){
+            getNextToken(false);
+            if(currentLexem == NUM){
+                getNextToken(false);
+                if(currentLexem == DOT_COMMA){
+                    return true;
+                }
+            }
+        }
     }
 
-    bool childResult = false;
-
-    if(!(childResult = text(true)))
-        return false;
-    else
-        return childResult && mainBody(false);
+    return true;
 }
 
 bool term(bool bGetNextToken){
     if(bGetNextToken)
-        getNextToken();
+        getNextToken(false);
     
     switch(currentLexem){
         case ID:
@@ -181,19 +222,102 @@ bool term(bool bGetNextToken){
 }
 
 bool text(bool bGetNextToken){
-    
+
+    // IDK HOW TO DO THIS FUNCTION!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+    if(createVar(bGetNextToken)){
+        text(bGetNextToken);
+        return true;
+    }else if(setVar(bGetNextToken)){
+        text(bGetNextToken);
+        return true;
+    }else if(callFunc(bGetNextToken)){
+        text(bGetNextToken);
+        return true;
+    }else if(logBlock(bGetNextToken)){
+        text(bGetNextToken);
+        return true;
+    }else
+        return false;
 }
 
 bool createVar(bool bGetNextToken){
+    if(bGetNextToken)
+        getNextToken(false);
 
+    if(currentLexem == TYPE){
+        getNextToken(false);
+        if(currentLexem == ID){
+            getNextToken(false);
+            if(currentLexem == DOT_COMMA){
+                return true;
+            }else if(currentLexem == EQUALS){
+                getNextToken(false);
+                if(expr(false)){
+                    if(currentLexem == DOT_COMMA){
+                        return true;
+                    }
+                }
+            }
+        }
+    }
+
+    return false;
+
+    // switch(currentLexem){
+    //     case TYPE:
+    //         return createVar(true);
+    //     case ID:
+    //         return createVar(true);
+    //     case DOT_COMMA:
+    //         return true;
+    //     case EQUALS:
+    //         return expr(true) && createVar(false);
+    //     default:
+    //         return false;
+    // }
 }
 
 bool setVar(bool bGetNextToken){
+    if(bGetNextToken)
+        getNextToken(false);
 
+    if(currentLexem == ID){
+        getNextToken(false);
+        if(currentLexem == EQUALS){
+            getNextToken(false);
+            if(expr(false)){
+                if(currentLexem == DOT_COMMA){
+                    return true;
+                }
+            }
+        }
+    }
+
+    return false;
 }
 
 bool callFunc(bool bGetNextToken){
+    if(bGetNextToken)
+        getNextToken(false);
 
+    if(currentLexem == ID){
+        getNextToken(false);
+        if(currentLexem == FLBRACK){
+            getNextToken(false);
+            if(params(false)){
+                getNextToken(false);
+                if(currentLexem == FRBRACK){
+                    getNextToken(false);
+                    if(currentLexem == DOT_COMMA){
+                        return true;
+                    }
+                }
+            }
+        }
+    }
+
+    return false;
 }
 
 bool logBlock(bool bGetNextToken){
