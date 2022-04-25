@@ -4,28 +4,28 @@
 
 enum Token{
     ENDF = 256,
-    ENDL,
-    MAIN_SIG,
-    FLBRACK,
-    FRBRACK,
-    CLBRACK,
-    CRBRACK,
-    INCLUDE_SIG,
-    ILBRACK,
-    IRBRACK,
-    DOT_H,
+    ENDL, // end of line
+    MAIN_SIG, //int main()
+    FLBRACK, //{
+    FRBRACK, //}
+    CLBRACK, //(
+    CRBRACK, //)
+    INCLUDE_SIG, //#include
+    ILBRACK, //<
+    IRBRACK, //>
+    DOT_H, //.h
     ID,
-    RETURN,
+    RETURN, //return
     NUM,
-    STR,
-    DOT_COMMA,
-    COMMA,
-    TYPE, 
-    EQUALS,
-    SCANF,
-    PRINTF,
-    IF,
-    ELSE,
+    STR, //"*"
+    DOT_COMMA, //;
+    COMMA, //,
+    TYPE,  // int or float
+    EQUALS, // =
+    SCANF, // scanf
+    PRINTF, // printf
+    IF, // if
+    ELSE, // else
 
 
 };
