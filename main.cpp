@@ -26,8 +26,17 @@ enum Token{
     PRINTF, // printf
     IF, // if
     ELSE, // else
-
-
+    MUL, // *
+    DIV, // \/
+    RDIV, // %
+    PLUS, // +
+    MINUS, // -
+    LOG_LEFT, // <
+    LOG_RIGHT, // >
+    LOG_E_LEFT, // <=
+    LOG_E_RIGHT, // >=
+    LOG_EQUAL, // ==
+    LOG_NOT_EQUAL, // !=
 };
 
 #pragma endregion
@@ -52,13 +61,12 @@ bool setVar(bool bGetNextToken);
 bool iocmd(bool bGetNextToken);
 bool logBlock(bool bGetNextToken);
 bool expr(bool bGetNextToken);
+bool subExpr(bool bGetNextToken);
+bool rSubExpr(bool bGetNextToken);
 bool rExpr(bool bGetNextToken);
 bool logExpr(bool bGetNextToken);
 bool rLogExpr(bool bGetNextToken);
-bool program(bool bGetNextToken);
 bool ifBody(bool bGetNextToken);
-bool sign(bool bGetNextToken);
-bool logSign(bool bGetNextToken);
 
 #pragma endregion
 
@@ -320,41 +328,119 @@ bool logBlock(bool bGetNextToken){
 }
 
 bool expr(bool bGetNextToken){
+    if(subExpr(bGetNextToken)){
+        if(rExpr(bGetNextToken)){
+            return true;
+        }
+    }
 
+    return false;
+}
+
+bool subExpr(bool bGetNextToken){
+    if(term(bGetNextToken)){
+        if(rSubExpr(bGetNextToken)){
+            return true;
+        }
+    }
+
+    return false;
+}
+
+bool rSubExpr(bool bGetNextToken){
+    if(bGetNextToken)
+        getNextToken(false);
+
+    bool result = false;
+
+    switch(currentLexem){
+        case MUL:
+        case DIV:
+        case RDIV:
+            result = term(bGetNextToken);
+        break;
+    }
+
+    // need debug here because idk how to get EPSILON
+    // it is return always error
+
+    if(result){
+        rSubExpr(true);
+        return true;
+    }else{
+        return false;
+    }
 }
 
 bool rExpr(bool bGetNextToken){
+    if(bGetNextToken)
+        getNextToken(false);
 
-}
+    bool result = false;
 
-bool params(bool bGetNextToken){
+    switch(currentLexem){
+        case PLUS:
+        case MINUS:
+            result = subExpr(bGetNextToken);
+        break;
+    }
 
-}
+    //here also as in rSubExpr
 
-bool param(bool bGetNextToken){
-
+    if(result){
+        rExpr(true);
+        return true;
+    }else{
+        return false;
+    }
 }
 
 bool logExpr(bool bGetNextToken){
+    if(term(bGetNextToken)){
+        if(rLogExpr(bGetNextToken)){
+            return true;
+        }
+    }
 
+    return false;
 }
 
 bool rLogExpr(bool bGetNextToken){
+    if(bGetNextToken)
+        getNextToken(false);
 
-}
+    bool result = false;
 
-bool program(bool bGetNextToken){
+    switch(currentLexem){
+        case LOG_LEFT:
+        case LOG_RIGHT:
+        case LOG_E_LEFT:
+        case LOG_E_RIGHT:
+        case LOG_EQUAL:
+        case LOG_NOT_EQUAL:
+            result = term(bGetNextToken);
+    }
 
+    if(result){
+        rLogExpr(true);
+        return true;
+    }else   
+        return false;
 }
 
 bool ifBody(bool bGetNextToken){
+    if(bGetNextToken)
+        getNextToken(false);
 
-}
+    switch(currentLexem){
+        case TYPE:
+            return createVar(false);
+        case ID:
+            return setVar(false);
+        case SCANF:
+        case PRINTF:
+            return iocmd(false);
+    }
 
-bool sign(bool bGetNextToken){
-
-}
-
-bool logSign(bool bGetNextToken){
-
+    return false;
 }
