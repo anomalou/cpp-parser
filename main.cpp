@@ -8,6 +8,8 @@ enum Token{
     MAIN_SIG,
     FLBRACK,
     FRBRACK,
+    CLBRACK,
+    CRBRACK,
     INCLUDE_SIG,
     ILBRACK,
     IRBRACK,
@@ -15,9 +17,16 @@ enum Token{
     ID,
     RETURN,
     NUM,
+    STR,
     DOT_COMMA,
+    COMMA,
     TYPE, 
     EQUALS,
+    SCANF,
+    PRINTF,
+    IF,
+    ELSE,
+
 
 };
 
@@ -40,12 +49,10 @@ bool term(bool bGetNextToken);
 bool text(bool bGetNextToken);
 bool createVar(bool bGetNextToken);
 bool setVar(bool bGetNextToken);
-bool callFunc(bool bGetNextToken);
+bool iocmd(bool bGetNextToken);
 bool logBlock(bool bGetNextToken);
 bool expr(bool bGetNextToken);
 bool rExpr(bool bGetNextToken);
-bool params(bool bGetNextToken);
-bool param(bool bGetNextToken);
 bool logExpr(bool bGetNextToken);
 bool rLogExpr(bool bGetNextToken);
 bool program(bool bGetNextToken);
@@ -72,7 +79,7 @@ int main(int argc, char *argv[]){
 
     //read source code here
 
-    if(!program){
+    if(!program(true)){
         //cout error
         return -1;
     }
@@ -93,10 +100,10 @@ void getNextToken(bool skipEndl){
 }
 
 bool program(bool bGetNextToken){
-    if(!includesPart(bGetNextToken) || !mainPart(bGetNextToken))
-        return false;
+    if(includesPart(bGetNextToken) && mainPart(false))
+        return true;
 
-    return true;
+    return false;
 }
 
 bool includesPart(bool bGetNextToken){
@@ -125,19 +132,6 @@ bool mainPart(bool bGetNextToken){
     }
 
     return false;
-
-    // switch(currentLexem){
-    //     case MAIN_SIG:
-    //         return mainPart(true);
-    //     case FLBRACK:
-    //         return mainBody(true) && mainPart(false);
-    //     case FRBRACK:
-    //         return true;
-    //     case ENDL:
-    //         return mainPart(true);
-    //     default:
-    //         return false;
-    // }
 }
 
 bool include(bool bGetNextToken){
@@ -163,35 +157,9 @@ bool include(bool bGetNextToken){
     }
 
     return false;
-
-    // switch(currentLexem){
-    //     case INCLUDE_SIG:
-    //         getNextToken();
-    //     case ILBRACK:
-    //         getNextToken();
-    //     case ID:
-    //         getNextToken();
-    //     case DOT_H:
-    //         getNextToken();
-    //     case IRBRACK:
-    //         getNextToken();
-    //     case ENDL:
-    //         return true;
-    //     default:
-    //         return false;
-    // }
 }
 
 bool mainBody(bool bGetNextToken){
-    // switch(currentLexem){
-    //     case RETURN:
-    //         return mainBody(true);
-    //     case NUM:
-    //         return mainBody(true);
-    //     case DOT_COMMA:
-    //         return true;
-    // }
-
     if(text(true)){
         getNextToken(true);
         if(currentLexem == RETURN){
@@ -222,20 +190,29 @@ bool term(bool bGetNextToken){
 }
 
 bool text(bool bGetNextToken){
+    if(bGetNextToken)
+        getNextToken(false);
 
-    // IDK HOW TO DO THIS FUNCTION!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    bool result = false;
 
-    if(createVar(bGetNextToken)){
-        text(bGetNextToken);
-        return true;
-    }else if(setVar(bGetNextToken)){
-        text(bGetNextToken);
-        return true;
-    }else if(callFunc(bGetNextToken)){
-        text(bGetNextToken);
-        return true;
-    }else if(logBlock(bGetNextToken)){
-        text(bGetNextToken);
+    switch(currentLexem){
+        case TYPE:
+            result = createVar(false);
+        break;
+        case ID:
+            result = setVar(false);
+        break;
+        case SCANF:
+        case PRINTF:
+            result = iocmd(false);
+        break;
+        case IF:
+            result = logBlock(false);
+        break;
+    }
+
+    if(result){
+        text(true);
         return true;
     }else
         return false;
@@ -263,19 +240,6 @@ bool createVar(bool bGetNextToken){
     }
 
     return false;
-
-    // switch(currentLexem){
-    //     case TYPE:
-    //         return createVar(true);
-    //     case ID:
-    //         return createVar(true);
-    //     case DOT_COMMA:
-    //         return true;
-    //     case EQUALS:
-    //         return expr(true) && createVar(false);
-    //     default:
-    //         return false;
-    // }
 }
 
 bool setVar(bool bGetNextToken){
@@ -297,20 +261,26 @@ bool setVar(bool bGetNextToken){
     return false;
 }
 
-bool callFunc(bool bGetNextToken){
+bool iocmd(bool bGetNextToken){
     if(bGetNextToken)
         getNextToken(false);
 
-    if(currentLexem == ID){
+    if(currentLexem == SCANF){
         getNextToken(false);
-        if(currentLexem == FLBRACK){
+        if(currentLexem == CLBRACK){
             getNextToken(false);
-            if(params(false)){
+            if(currentLexem == STR){
                 getNextToken(false);
-                if(currentLexem == FRBRACK){
+                if(currentLexem == COMMA){
                     getNextToken(false);
-                    if(currentLexem == DOT_COMMA){
-                        return true;
+                    if(term(false)){
+                        getNextToken(false);
+                        if(currentLexem == CRBRACK){
+                            getNextToken(false);
+                            if(currentLexem == DOT_COMMA){
+                                return true;
+                            }
+                        }
                     }
                 }
             }
@@ -321,7 +291,32 @@ bool callFunc(bool bGetNextToken){
 }
 
 bool logBlock(bool bGetNextToken){
+    if(bGetNextToken)
+        getNextToken(false);
 
+    if(currentLexem == IF){
+        getNextToken(false);
+        if(currentLexem == CLBRACK){
+            getNextToken(false);
+            if(logExpr(false)){
+                getNextToken(false);// danger
+                if(currentLexem == CRBRACK){
+                    getNextToken(false);
+                    if(ifBody(false)){
+                        getNextToken(false);
+                        if(currentLexem == ELSE){
+                            getNextToken(false);
+                            if(ifBody(false))
+                                return true;
+                        }
+                        return true;
+                    }
+                }
+            }
+        }
+    }
+
+    return false;
 }
 
 bool expr(bool bGetNextToken){
