@@ -4,43 +4,6 @@
 
 #pragma region Enums
 
-// enum Token{
-//     ENDF = 256,
-//     ENDL, // end of line
-//     MAIN_SIG, //int main()
-//     FLBRACK, //{
-//     FRBRACK, //}
-//     CLBRACK, //(
-//     CRBRACK, //)
-//     INCLUDE_SIG, //#include
-//     ILBRACK, //<
-//     IRBRACK, //>
-//     DOT_H, //.h
-//     ID,
-//     RETURN, //return
-//     NUM,
-//     STR, //"*"
-//     DOT_COMMA, //;
-//     COMMA, //,
-//     TYPE,  // int or float
-//     EQUALS, // =
-//     SCANF, // scanf
-//     PRINTF, // printf
-//     IF, // if
-//     ELSE, // else
-//     MUL, // *
-//     DIV, // \/
-//     RDIV, // %
-//     PLUS, // +
-//     MINUS, // -
-//     LOG_LEFT, // <
-//     LOG_RIGHT, // >
-//     LOG_E_LEFT, // <=
-//     LOG_E_RIGHT, // >=
-//     LOG_EQUAL, // ==
-//     LOG_NOT_EQUAL, // !=
-// };
-
 #pragma endregion
 
 #pragma region FunctionsDeclaration
