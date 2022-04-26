@@ -10,7 +10,8 @@
             "request": "launch",
             "program": "${fileDirname}\\${fileBasenameNoExtension}.exe",
             "args": [
-                "../tests/lightTest.c"
+                "../tests/majorTest.c",
+                "-debug"
             ],
             "stopAtEntry": false,
             "cwd": "${fileDirname}",

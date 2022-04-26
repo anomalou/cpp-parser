@@ -33,5 +33,6 @@ enum Token{
         LOG_E_LEFT, 
         LOG_E_RIGHT, 
         LOG_EQUAL, 
-        LOG_NOT_EQUAL
+        LOG_NOT_EQUAL,
+        VAR_ADDRESS,
     };

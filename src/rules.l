@@ -4,34 +4,19 @@
 
 DIGIT [0-9]
 CHAR [a-zA-Z]
-<<<<<<< Updated upstream
 SPACE " "*
 STRING \".*\"
+SIGN [\=\!\>\<\-\*\/\%]
 %%
-{SPACE} {}
-int{SPACE}main{SPACE}\(\) {return MAIN_SIG;}
-#include {return INCLUDE_SIG;}
-return {return RETURN;}
-"int"|"float"|"void" {return TYPE;}
-"scanf"\(\) {return SCANF;}
-"printf" {return PRINTF;}
-"if" {return IF;}
-"else" {return ELSE;}
-=======
-SPACE \s+
-STRING \"*\"
-%%
-
-{SPACE} {return SPACE;}
 "int main()" {return MAIN_SIG;}
+{SPACE} {return SPACE;}
 #include {return INCLUDE_SIG;}
 return {return RETURN;}
 "int"|"float" {return TYPE;}
-scanf {return SCANF;}
-printf {return PRINTF;}
-if {return IF;}
-else {return ELSE;}
->>>>>>> Stashed changes
+"scanf" {return SCANF;}
+"printf" {return PRINTF;}
+"if" {return IF;}
+"else" {return ELSE;}
 <<EOF>> {return ENDF;} //todo https://stackoverflow.com/questions/22811320/flex-bison-not-terminating-on-eof
 \n {return ENDL;} //todo &*
 \{ {return FLBRACK;}
@@ -40,11 +25,11 @@ else {return ELSE;}
 \) {return CRBRACK;}
 .h {return DOT_H;}
 {CHAR}({CHAR}|{DIGIT})* {return ID;}
-{DIGIT}+.{DIGIT} {return NUM;}
-{DIGIT}+ {return NUM;} //todo float?
-\"({CHAR}|{DIGIT})*\" {return STR;}
+{DIGIT}+(.{DIGIT}+)? {return NUM;} //todo float?
+\"({CHAR}|{DIGIT}|{SIGN}|{SPACE})*\" {return STR;}
 ; {return DOT_COMMA;}
 , {return COMMA;}
+\& {return VAR_ADDRESS;}
 \= {return EQUALS;}
 \* {return MUL;}
 \/ {return DIV;}

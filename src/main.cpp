@@ -1,5 +1,6 @@
 #include <iostream>
 #include "lexem.h"
+#include <string.h>
 
 #pragma region Enums
 
@@ -78,6 +79,10 @@ string sourceCodePath;
 
 enum Token currentLexem = ENDF;
 
+int lineNumber = 1;
+
+bool debug = false;
+
 //here need error if it was found
 
 int main(int argc, char *argv[]){
@@ -89,8 +94,12 @@ int main(int argc, char *argv[]){
 
     yyin = fopen(argv[1], "r");
 
+    if(argc > 2)
+        if(strcmp(argv[2], "-debug") == 0)
+            debug = true;
+
     if(!program(true)){
-        //cout error
+        printf("ERROR! Unexpected character at %d line:\nCode: %d\nError value: %s", lineNumber, currentLexem, yytext);
         return -1;
     }
 
@@ -104,10 +113,14 @@ void getNextToken(bool skipEndl){
 
     do{
         token = (enum Token)yylex();
+        if(token == ENDL)
+            lineNumber++;
     }while(token < ENDF || (token == ENDL && skipEndl));
 
     currentLexem = token;
-    printf("|%s|\n", yytext);
+
+    if(debug)
+        printf("Lexem: >%s<\n", yytext);
 }
 
 bool program(bool bGetNextToken){
@@ -171,20 +184,19 @@ bool include(bool bGetNextToken){
 }
 
 bool mainBody(bool bGetNextToken){
-    if(text(true)){
-        getNextToken(true);
-        if(currentLexem == RETURN){
+    text(bGetNextToken);
+
+    if(currentLexem == RETURN){
+        getNextToken(false);
+        if(currentLexem == NUM){
             getNextToken(false);
-            if(currentLexem == NUM){
-                getNextToken(false);
-                if(currentLexem == DOT_COMMA){
-                    return true;
-                }
+            if(currentLexem == DOT_COMMA){
+                return true;
             }
         }
     }
 
-    return true;
+    return false;
 }
 
 bool term(bool bGetNextToken){
@@ -202,7 +214,7 @@ bool term(bool bGetNextToken){
 
 bool text(bool bGetNextToken){
     if(bGetNextToken)
-        getNextToken(false);
+        getNextToken(true);
 
     bool result = false;
 
@@ -284,6 +296,9 @@ bool iocmd(bool bGetNextToken){
                 getNextToken(false);
                 if(currentLexem == COMMA){
                     getNextToken(false);
+                    if(currentLexem == VAR_ADDRESS){
+                        getNextToken(false);
+                    }
                     if(term(false)){
                         getNextToken(false);
                         if(currentLexem == CRBRACK){
@@ -310,13 +325,13 @@ bool logBlock(bool bGetNextToken){
         if(currentLexem == CLBRACK){
             getNextToken(false);
             if(logExpr(false)){
-                getNextToken(false);// danger
+                // getNextToken(false);// danger
                 if(currentLexem == CRBRACK){
-                    getNextToken(false);
+                    getNextToken(true);
                     if(ifBody(false)){
-                        getNextToken(false);
+                        getNextToken(true);
                         if(currentLexem == ELSE){
-                            getNextToken(false);
+                            getNextToken(true);
                             if(ifBody(false))
                                 return true;
                         }
@@ -342,7 +357,7 @@ bool expr(bool bGetNextToken){
 
 bool subExpr(bool bGetNextToken){
     if(term(bGetNextToken)){
-        if(rSubExpr(bGetNextToken)){
+        if(rSubExpr(true)){
             return true;
         }
     }
@@ -400,7 +415,7 @@ bool rExpr(bool bGetNextToken){
 
 bool logExpr(bool bGetNextToken){
     if(term(bGetNextToken)){
-        if(rLogExpr(bGetNextToken)){
+        if(rLogExpr(true)){
             return true;
         }
     }
@@ -421,7 +436,7 @@ bool rLogExpr(bool bGetNextToken){
         case LOG_E_RIGHT:
         case LOG_EQUAL:
         case LOG_NOT_EQUAL:
-            result = term(bGetNextToken);
+            result = term(true);
     }
 
     if(result){
