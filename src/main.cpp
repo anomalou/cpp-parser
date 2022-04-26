@@ -83,7 +83,7 @@ void getNextToken(bool skipEndl){
     currentLexem = token;
 
     if(debug)
-        printf("Lexem: >%s<\n", yytext);
+        printf("Lexem: (%s) - %d\n", yytext, token);
 }
 
 bool program(bool bGetNextToken){
@@ -309,8 +309,8 @@ bool logBlock(bool bGetNextToken){
 }
 
 bool expr(bool bGetNextToken){
-    if(subExpr(bGetNextToken)){
-        if(rExpr(bGetNextToken)){
+    if(term(bGetNextToken)){
+        if(rExpr(true)){
             return true;
         }
     }
@@ -335,6 +335,11 @@ bool rSubExpr(bool bGetNextToken){
     bool result = false;
 
     switch(currentLexem){
+        case DOT_COMMA:
+        case PLUS:
+        case MINUS:
+            result = true;
+        break;
         case MUL:
         case DIV:
         case RDIV:
@@ -362,7 +367,13 @@ bool rExpr(bool bGetNextToken){
     switch(currentLexem){
         case PLUS:
         case MINUS:
-            result = subExpr(bGetNextToken);
+        case MUL:
+        case DIV:
+        case RDIV:
+            result = term(true);
+        break;
+        case DOT_COMMA:
+            return true;
         break;
     }
 
