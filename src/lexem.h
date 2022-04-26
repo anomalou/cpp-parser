@@ -1,5 +1,6 @@
-enum Lexem{
-        ENDF = 256, 
+enum Token{
+        SPACE = 256,
+        ENDF = 1000, 
         ENDL,
         MAIN_SIG, 
         FLBRACK, 

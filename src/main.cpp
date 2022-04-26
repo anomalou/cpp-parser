@@ -1,43 +1,44 @@
 #include <iostream>
+#include "lexem.h"
 
 #pragma region Enums
 
-enum Token{
-    ENDF = 256,
-    ENDL, // end of line
-    MAIN_SIG, //int main()
-    FLBRACK, //{
-    FRBRACK, //}
-    CLBRACK, //(
-    CRBRACK, //)
-    INCLUDE_SIG, //#include
-    ILBRACK, //<
-    IRBRACK, //>
-    DOT_H, //.h
-    ID,
-    RETURN, //return
-    NUM,
-    STR, //"*"
-    DOT_COMMA, //;
-    COMMA, //,
-    TYPE,  // int or float
-    EQUALS, // =
-    SCANF, // scanf
-    PRINTF, // printf
-    IF, // if
-    ELSE, // else
-    MUL, // *
-    DIV, // \/
-    RDIV, // %
-    PLUS, // +
-    MINUS, // -
-    LOG_LEFT, // <
-    LOG_RIGHT, // >
-    LOG_E_LEFT, // <=
-    LOG_E_RIGHT, // >=
-    LOG_EQUAL, // ==
-    LOG_NOT_EQUAL, // !=
-};
+// enum Token{
+//     ENDF = 256,
+//     ENDL, // end of line
+//     MAIN_SIG, //int main()
+//     FLBRACK, //{
+//     FRBRACK, //}
+//     CLBRACK, //(
+//     CRBRACK, //)
+//     INCLUDE_SIG, //#include
+//     ILBRACK, //<
+//     IRBRACK, //>
+//     DOT_H, //.h
+//     ID,
+//     RETURN, //return
+//     NUM,
+//     STR, //"*"
+//     DOT_COMMA, //;
+//     COMMA, //,
+//     TYPE,  // int or float
+//     EQUALS, // =
+//     SCANF, // scanf
+//     PRINTF, // printf
+//     IF, // if
+//     ELSE, // else
+//     MUL, // *
+//     DIV, // \/
+//     RDIV, // %
+//     PLUS, // +
+//     MINUS, // -
+//     LOG_LEFT, // <
+//     LOG_RIGHT, // >
+//     LOG_E_LEFT, // <=
+//     LOG_E_RIGHT, // >=
+//     LOG_EQUAL, // ==
+//     LOG_NOT_EQUAL, // !=
+// };
 
 #pragma endregion
 
@@ -46,6 +47,7 @@ enum Token{
 extern int yylex();
 extern char *yytext;
 extern int yyleng;
+extern FILE *yyin;
 
 void getNextToken(bool skipEndl);
 
@@ -85,7 +87,7 @@ int main(int argc, char *argv[]){
         return -1;
     }
 
-    //read source code here
+    yyin = fopen(argv[1], "r");
 
     if(!program(true)){
         //cout error
@@ -98,13 +100,14 @@ int main(int argc, char *argv[]){
 }
 
 void getNextToken(bool skipEndl){
-    int token;
+    enum Token token;
 
     do{
-        token = yylex();
+        token = (enum Token)yylex();
     }while(token < ENDF || (token == ENDL && skipEndl));
 
-    currentLexem = (enum Token)token;
+    currentLexem = token;
+    printf("|%s|\n", yytext);
 }
 
 bool program(bool bGetNextToken){
@@ -148,13 +151,13 @@ bool include(bool bGetNextToken){
 
     if(currentLexem == INCLUDE_SIG){
         getNextToken(false);
-        if(currentLexem == ILBRACK){
+        if(currentLexem == LOG_LEFT){
             getNextToken(false);
             if(currentLexem == ID){
                 getNextToken(false);
                 if(currentLexem == DOT_H){
                     getNextToken(false);
-                    if(currentLexem == IRBRACK){
+                    if(currentLexem == LOG_RIGHT){
                         getNextToken(false);
                         if(currentLexem == ENDL)
                             return true;
