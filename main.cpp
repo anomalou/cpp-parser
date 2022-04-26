@@ -273,7 +273,7 @@ bool iocmd(bool bGetNextToken){
     if(bGetNextToken)
         getNextToken(false);
 
-    if(currentLexem == SCANF){
+    if(currentLexem == SCANF || currentLexem == PRINTF){
         getNextToken(false);
         if(currentLexem == CLBRACK){
             getNextToken(false);
