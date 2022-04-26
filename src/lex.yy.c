@@ -1,5 +1,6 @@
+#line 2 "src/lex.yy.c"
 
-#line 3 "lex.yy.c"
+#line 4 "src/lex.yy.c"
 
 #define  YY_INT_ALIGNED short int
 
@@ -504,45 +505,10 @@ int yy_flex_debug = 0;
 #define YY_MORE_ADJ 0
 #define YY_RESTORE_YY_MORE_OFFSET
 char *yytext;
-#line 1 "lex/rules.l"
-#line 2 "lex/rules.l"
-    enum Lexem{
-        ENDF = 256, 
-        ENDL,
-        MAIN_SIG, 
-        FLBRACK, 
-        FRBRACK, 
-        CLBRACK, 
-        CRBRACK, 
-        INCLUDE_SIG,
-        ILBRACK,
-        IRBRACK,
-        DOT_H, 
-        ID,
-        RETURN,
-        NUM,
-        STR,
-        DOT_COMMA, 
-        COMMA, 
-        TYPE, 
-        EQUALS,
-        SCANF, 
-        PRINTF, 
-        IF, 
-        ELSE, 
-        MUL, 
-        DIV, 
-        RDIV, 
-        PLUS, 
-        MINUS, 
-        LOG_LEFT, 
-        LOG_RIGHT, 
-        LOG_E_LEFT, 
-        LOG_E_RIGHT, 
-        LOG_EQUAL, 
-        LOG_NOT_EQUAL
-    };
-#line 546 "lex.yy.c"
+#line 1 "src/rules.l"
+#line 2 "src/rules.l"
+    #include "lexem.h"
+#line 512 "src/lex.yy.c"
 
 #define INITIAL 0
 
@@ -724,10 +690,10 @@ YY_DECL
 	register char *yy_cp, *yy_bp;
 	register int yy_act;
     
-#line 44 "lex/rules.l"
+#line 9 "src/rules.l"
 
 
-#line 731 "lex.yy.c"
+#line 697 "src/lex.yy.c"
 
 	if ( !(yy_init) )
 		{
@@ -812,180 +778,180 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 46 "lex/rules.l"
+#line 11 "src/rules.l"
 {return MAIN_SIG;}
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 47 "lex/rules.l"
+#line 12 "src/rules.l"
 {return INCLUDE_SIG;}
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 48 "lex/rules.l"
+#line 13 "src/rules.l"
 {return RETURN;}
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 49 "lex/rules.l"
+#line 14 "src/rules.l"
 {return TYPE;}
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 50 "lex/rules.l"
+#line 15 "src/rules.l"
 {return SCANF;}
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 51 "lex/rules.l"
+#line 16 "src/rules.l"
 {return PRINTF;}
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 52 "lex/rules.l"
+#line 17 "src/rules.l"
 {return IF;}
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 53 "lex/rules.l"
+#line 18 "src/rules.l"
 {return ELSE;}
 	YY_BREAK
 case YY_STATE_EOF(INITIAL):
-#line 54 "lex/rules.l"
+#line 19 "src/rules.l"
 {return ENDF;} //todo https://stackoverflow.com/questions/22811320/flex-bison-not-terminating-on-eof
 	YY_BREAK
 case 9:
 /* rule 9 can match eol */
 YY_RULE_SETUP
-#line 55 "lex/rules.l"
-{return ENDL;} //todo
+#line 20 "src/rules.l"
+{return ENDL;} //todo &*
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 56 "lex/rules.l"
+#line 21 "src/rules.l"
 {return FLBRACK;}
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 57 "lex/rules.l"
+#line 22 "src/rules.l"
 {return FRBRACK;}
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 58 "lex/rules.l"
+#line 23 "src/rules.l"
 {return CLBRACK;}
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 59 "lex/rules.l"
+#line 24 "src/rules.l"
 {return CRBRACK;}
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 60 "lex/rules.l"
+#line 25 "src/rules.l"
 {return ILBRACK;}
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 61 "lex/rules.l"
+#line 26 "src/rules.l"
 {return IRBRACK;}
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 62 "lex/rules.l"
+#line 27 "src/rules.l"
 {return DOT_H;}
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
-#line 63 "lex/rules.l"
+#line 28 "src/rules.l"
 {return ID;}
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 64 "lex/rules.l"
-{return NUM;} //todo
+#line 29 "src/rules.l"
+{return NUM;} //todo float?
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
-#line 65 "lex/rules.l"
+#line 30 "src/rules.l"
 {return STR;}
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
-#line 66 "lex/rules.l"
+#line 31 "src/rules.l"
 {return DOT_COMMA;}
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
-#line 67 "lex/rules.l"
+#line 32 "src/rules.l"
 {return COMMA;}
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
-#line 68 "lex/rules.l"
+#line 33 "src/rules.l"
 {return EQUALS;}
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
-#line 69 "lex/rules.l"
+#line 34 "src/rules.l"
 {return MUL;}
 	YY_BREAK
 case 24:
 YY_RULE_SETUP
-#line 70 "lex/rules.l"
+#line 35 "src/rules.l"
 {return DIV;}
 	YY_BREAK
 case 25:
 YY_RULE_SETUP
-#line 71 "lex/rules.l"
+#line 36 "src/rules.l"
 {return RDIV;}
 	YY_BREAK
 case 26:
 YY_RULE_SETUP
-#line 72 "lex/rules.l"
+#line 37 "src/rules.l"
 {return PLUS;}
 	YY_BREAK
 case 27:
 YY_RULE_SETUP
-#line 73 "lex/rules.l"
+#line 38 "src/rules.l"
 {return MINUS;}
 	YY_BREAK
 case 28:
 YY_RULE_SETUP
-#line 74 "lex/rules.l"
+#line 39 "src/rules.l"
 {return LOG_LEFT;}
 	YY_BREAK
 case 29:
 YY_RULE_SETUP
-#line 75 "lex/rules.l"
+#line 40 "src/rules.l"
 {return LOG_RIGHT;}
 	YY_BREAK
 case 30:
 YY_RULE_SETUP
-#line 76 "lex/rules.l"
+#line 41 "src/rules.l"
 {return LOG_E_LEFT;}
 	YY_BREAK
 case 31:
 YY_RULE_SETUP
-#line 77 "lex/rules.l"
+#line 42 "src/rules.l"
 {return LOG_E_RIGHT;}
 	YY_BREAK
 case 32:
 YY_RULE_SETUP
-#line 78 "lex/rules.l"
+#line 43 "src/rules.l"
 {return LOG_EQUAL;}
 	YY_BREAK
 case 33:
 YY_RULE_SETUP
-#line 79 "lex/rules.l"
+#line 44 "src/rules.l"
 {return LOG_NOT_EQUAL;}
 	YY_BREAK
 case 34:
 YY_RULE_SETUP
-#line 80 "lex/rules.l"
+#line 45 "src/rules.l"
 ECHO;
 	YY_BREAK
-#line 989 "lex.yy.c"
+#line 955 "src/lex.yy.c"
 
 	case YY_END_OF_BUFFER:
 		{
@@ -1980,123 +1946,10 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 80 "lex/rules.l"
+#line 45 "src/rules.l"
 
 
 
 int yywrap(void){
     return 1;
-}
-
-int main(){
-    int lexem_class;
-    while (1) {
-        lexem_class = yylex();
-        switch (lexem_class) {
-            case ENDF:
-                printf("%s : %s", yytext, "ENDF\n");
-                return 0;
-            case ENDL:
-                printf("%s : %s", yytext, "ENDL\n");
-                break;
-            case MAIN_SIG:
-                printf("%s : %s", yytext, "MAIN_SIG\n");
-                break;
-            case FLBRACK:
-                printf("%s : %s", yytext, "FLBRACK\n");
-                break;
-            case FRBRACK:
-                printf("%s : %s", yytext, "FRBRACK\n");
-                break;
-            case CLBRACK:
-                printf("%s : %s", yytext, "CLBRACK\n");
-                break;
-            case CRBRACK:
-                printf("%s : %s", yytext, "CRBRACK\n");
-                break;
-            case INCLUDE_SIG:
-                printf("%s : %s", yytext, "INCLUDE_SIG\n");
-                break;
-            case ILBRACK:
-                printf("%s : %s", yytext, "ILBRACK\n");
-                break;
-            case IRBRACK:
-                printf("%s : %s", yytext, "IRBRACK\n");
-                break;
-            case DOT_H:
-                printf("%s : %s", yytext, "DOT_H\n");
-                break;
-            case ID:
-                printf("%s : %s", yytext, "ID\n");
-                break;
-            case RETURN:
-                printf("%s : %s", yytext, "RETURN\n");
-                break;
-            case NUM:
-                printf("%s : %s", yytext, "NUM\n");
-                break;
-            case STR:
-                printf("%s : %s", yytext, "STR\n");
-                break;
-            case DOT_COMMA:
-                printf("%s : %s", yytext, "DOT_COMMA\n");
-                break;
-            case COMMA:
-                printf("%s : %s", yytext, "COMMA\n");
-                break;
-            case TYPE:
-                printf("%s : %s", yytext, "TYPE\n");
-                break;
-            case EQUALS:
-                printf("%s : %s", yytext, "EQUALS\n");
-                break;
-            case SCANF:
-                printf("%s : %s", yytext, "SCANF\n");
-                break;
-            case PRINTF:
-                printf("%s : %s", yytext, "PRINTF\n");
-                break;
-            case IF:
-                printf("%s : %s", yytext, "IF\n");
-                break;
-            case ELSE:
-                printf("%s : %s", yytext, "ELSE\n");
-                break;
-            case MUL:
-                printf("%s : %s", yytext, "MUL\n");
-                break;
-            case DIV:
-                printf("%s : %s", yytext, "DIV\n");
-                break;
-            case RDIV:
-                printf("%s : %s", yytext, "RDIV\n");
-                break;
-            case PLUS:
-                printf("%s : %s", yytext, "PLUS\n");
-                break;
-            case MINUS:
-                printf("%s : %s", yytext, "MINUS\n");
-                break;
-            case LOG_LEFT:
-                printf("%s : %s", yytext, "LOG_LEFT\n");
-                break;
-            case LOG_RIGHT:
-                printf("%s : %s", yytext, "LOG_RIGHT\n");
-                break;
-            case LOG_E_LEFT:
-                printf("%s : %s", yytext, "LOG_E_LEFT\n");
-                break;
-            case LOG_E_RIGHT:
-                printf("%s : %s", yytext, "LOG_E_RIGHT\n");
-                break;
-            case LOG_EQUAL:
-                printf("%s : %s", yytext, "LOG_EQUAL\n");
-                break;
-            case LOG_NOT_EQUAL:
-                printf("%s : %s", yytext, "LOG_NOT_EQUAL\n");
-                break;
-        }
-    }
-
-    return 0;
 }
