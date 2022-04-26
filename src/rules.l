@@ -4,18 +4,18 @@
 
 DIGIT [0-9]
 CHAR [a-zA-Z]
-SPACE \s+
+SPACE " "*
 STRING \".*\"
 %%
-
-main {return MAIN_SIG;}
+{SPACE} {}
+int{SPACE}main{SPACE}\(\) {return MAIN_SIG;}
 #include {return INCLUDE_SIG;}
 return {return RETURN;}
 "int"|"float"|"void" {return TYPE;}
-scanf\(\) {return SCANF;}
-printf {return PRINTF;}
-if {return IF;}
-else {return ELSE;}
+"scanf"\(\) {return SCANF;}
+"printf" {return PRINTF;}
+"if" {return IF;}
+"else" {return ELSE;}
 <<EOF>> {return ENDF;} //todo https://stackoverflow.com/questions/22811320/flex-bison-not-terminating-on-eof
 \n {return ENDL;} //todo &*
 \{ {return FLBRACK;}
