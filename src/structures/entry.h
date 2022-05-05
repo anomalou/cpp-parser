@@ -1,4 +1,5 @@
 #include <vector>
+#include <iostream>
 using namespace std;
 
 template<class T> 
@@ -8,16 +9,17 @@ class entry {
         entry<T>* parent;
         T token;
         vector<entry<T>*> children;
+        bool isCorrect;
     public:
 
         entry();
 
-        entry::entry(entry<T>* parent, T token): parent(parent), token(token)
+        entry(entry<T>* parent, T token): parent(parent), token(token)
         {
-            children = new vector();
+            isCorrect = false;
         }
 
-        entry::~entry()
+        ~entry()
         {
             for (int i = 0; i < children.size(); i++) {
                 delete children.at(i);
@@ -37,23 +39,31 @@ class entry {
             return children;
         }
 
-        vector<entry<T>*> addChild(T token) {
-            auto entry = new entry<T>(this, token);
-            children.push_back(entry);
-            return entry;
+        entry<T>* addChild(T token) {
+            entry<T>* e = new entry<T>(this, token);
+            children.push_back(e);
+            return e;
         }
 
-        string printEntry(int level) {
+        bool getIsCorrect() {
+            return isCorrect;
+        }
+
+        void setStatus(bool isCorrect) {
+            this->isCorrect = isCorrect;
+        }
+
+        void printEntry(int level) {
             
-            for (int i = 0; i < level - 1; ++i) {
+            for (int i = 0; i < level; ++i) {
                 cout << "      ";
             }
 
             if (level != 0) {
-                cout << "--->";
+                cout << "|-->";
             }
 
-            cout << "[" << token << "]";
+            cout << "[" << token << "]" << endl;
 
             for (int i = 0; i < children.size(); i++) {
                 children.at(i)->printEntry(level + 1);

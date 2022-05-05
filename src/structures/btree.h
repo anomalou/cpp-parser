@@ -9,7 +9,7 @@ class btree {
         entry<T>* root;
     
     public:
-        btree::btree(T token) {
+        btree(T token) {
             this->root = new entry<T>(nullptr, token);
             this->iterator = root; 
         }
@@ -18,14 +18,17 @@ class btree {
             return this->iterator;
         }
 
+        entry<T>* getRoot() {
+            return this->root;
+        }
         //при рекурсивных вызовах можно добавлять токен и сохранять итератор прошлого, при этом запустить обработку следующего токена
         //тогда на нашем рекурсивном вызове останется старый итератор
         entry<T>* addToken(entry<T>* _iterator, T _token) {
-            iterator = _iterator->addChild(token);
+            iterator = _iterator->addChild(_token);
             return iterator;
         }
 
-        std::string printTree() {
+        void printTree() {
             root->printEntry(0);
         }
 };
