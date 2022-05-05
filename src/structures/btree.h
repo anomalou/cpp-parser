@@ -10,8 +10,8 @@ class btree {
     
     public:
         btree::btree(T token) {
-            this->root = nullptr;
-            this->iterator = nullptr; 
+            this->root = new entry<T>(nullptr, token);
+            this->iterator = root; 
         }
     
         entry<T>* getIterator() {

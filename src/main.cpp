@@ -1,8 +1,28 @@
 #include <iostream>
 #include "lexem.h"
 #include <string.h>
+#include "structures/btree.h"
 
 #pragma region Enums
+
+enum Part{
+    PROG,
+    INC_PART,
+    MAIN,
+    INC,
+    MAIN_BODY,
+    TERM,
+    TEXT,
+    CVAR,
+    SVAR,
+    IO,
+    LOG,
+    EXPR,
+    REXPR,
+    LOG_EXPR,
+    RLOG_EXPR,
+    LOG_BODY
+};
 
 #pragma endregion
 
@@ -27,8 +47,6 @@ bool setVar(bool bGetNextToken);
 bool iocmd(bool bGetNextToken);
 bool logBlock(bool bGetNextToken);
 bool expr(bool bGetNextToken);
-bool subExpr(bool bGetNextToken);
-bool rSubExpr(bool bGetNextToken);
 bool rExpr(bool bGetNextToken);
 bool logExpr(bool bGetNextToken);
 bool rLogExpr(bool bGetNextToken);
@@ -46,7 +64,7 @@ int lineNumber = 1;
 
 bool debug = false;
 
-//here need error if it was found
+btree<Part>* tree;
 
 int main(int argc, char *argv[]){
 
@@ -87,6 +105,9 @@ void getNextToken(bool skipEndl){
 }
 
 bool program(bool bGetNextToken){
+
+    tree = new btree<Part>(PROG);
+
     if(includesPart(bGetNextToken) && mainPart(false))
         return true;
 
@@ -316,46 +337,6 @@ bool expr(bool bGetNextToken){
     }
 
     return false;
-}
-
-bool subExpr(bool bGetNextToken){
-    if(term(bGetNextToken)){
-        if(rSubExpr(true)){
-            return true;
-        }
-    }
-
-    return false;
-}
-
-bool rSubExpr(bool bGetNextToken){
-    if(bGetNextToken)
-        getNextToken(false);
-
-    bool result = false;
-
-    switch(currentLexem){
-        case DOT_COMMA:
-        case PLUS:
-        case MINUS:
-            result = true;
-        break;
-        case MUL:
-        case DIV:
-        case RDIV:
-            result = term(bGetNextToken);
-        break;
-    }
-
-    // need debug here because idk how to get EPSILON
-    // it is return always error
-
-    if(result){
-        rSubExpr(true);
-        return true;
-    }else{
-        return false;
-    }
 }
 
 bool rExpr(bool bGetNextToken){
