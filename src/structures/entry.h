@@ -63,7 +63,7 @@ class entry {
                 cout << "|-->";
             }
 
-            cout << "[" << token << "]" << endl;
+            cout << "[" << token << ":" << isCorrect << "]" << endl;
 
             for (int i = 0; i < children.size(); i++) {
                 children.at(i)->printEntry(level + 1);
